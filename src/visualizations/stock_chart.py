@@ -2,26 +2,25 @@ import plotly.graph_objects as go
 
 
 def create_price_chart(history, ticker):
-    """
-    Creates an interactive stock price chart.
-    """
 
     fig = go.Figure()
 
     fig.add_trace(
-        go.Scatter(
+        go.Candlestick(
             x=history.index,
-            y=history["Close"],
-            mode="lines",
+            open=history["Open"],
+            high=history["High"],
+            low=history["Low"],
+            close=history["Close"],
             name=ticker
         )
     )
 
     fig.update_layout(
-        title=f"{ticker} Stock Price History",
+        title=f"{ticker} Price History",
         xaxis_title="Date",
         yaxis_title="Price ($)",
-        hovermode="x"
+        xaxis_rangeslider_visible=False
     )
 
     return fig

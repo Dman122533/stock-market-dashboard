@@ -13,6 +13,8 @@ st.set_page_config(
 
 st.title("📈 Stock Market Dashboard")
 
+if "ticker" not in st.session_state:
+    st.session_state.ticker = None
 
 ticker = st.text_input(
     "Enter stock ticker",
@@ -22,8 +24,12 @@ ticker = st.text_input(
 
 if st.button("Search"):
 
-    stock = get_stock_data(ticker)
+    st.session_state.ticker = ticker
+if st.session_state.ticker:
 
+    ticker = st.session_state.ticker
+
+    stock = get_stock_data(ticker)
     st.subheader(stock["name"])
 
     col1, col2, col3 = st.columns(3)
@@ -62,8 +68,20 @@ if st.button("Search"):
         )
     st.subheader("Price History")
 
-    history = get_stock_history(ticker)
+    period = st.selectbox(
+    "Select Time Period",
+    [
+        "1mo",
+        "6mo",
+        "1y",
+        "5y"
+    ]
+    )
 
+    history = get_stock_history(
+        ticker,
+        period
+    )
     chart = create_price_chart(
         history,
         ticker
