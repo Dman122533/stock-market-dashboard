@@ -11,9 +11,7 @@ def get_stock_data(ticker_symbol):
     Returns:
         dict: Stock information
     """
-
     stock = yf.Ticker(ticker_symbol)
-
     info = stock.info
 
     return {
@@ -25,3 +23,21 @@ def get_stock_data(ticker_symbol):
         "52_week_high": info.get("fiftyTwoWeekHigh"),
         "52_week_low": info.get("fiftyTwoWeekLow")
     }
+
+def get_stock_history(ticker_symbol, period="1y"):
+    """
+    Retrieves historical stock price data.
+
+    Parameters:
+        ticker_symbol (str): Stock ticker symbol
+        period (str): Time period for historical data
+
+    Returns:
+        DataFrame: Historical stock prices
+    """
+
+    stock = yf.Ticker(ticker_symbol)
+
+    history = stock.history(period=period)
+
+    return history

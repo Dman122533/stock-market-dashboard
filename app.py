@@ -1,7 +1,8 @@
 import streamlit as st
 from src.utils.helpers import format_market_cap
 from src.api.stock_api import get_stock_data
-
+from src.api.stock_api import get_stock_data, get_stock_history
+from src.visualizations.stock_chart import create_price_chart
 
 st.set_page_config(
     page_title="Stock Market Dashboard",
@@ -59,3 +60,16 @@ if st.button("Search"):
             "52 Week Low",
             f"${stock['52_week_low']:,.2f}"
         )
+    st.subheader("Price History")
+
+    history = get_stock_history(ticker)
+
+    chart = create_price_chart(
+        history,
+        ticker
+    )
+
+    st.plotly_chart(
+        chart,
+        use_container_width=True
+    )
