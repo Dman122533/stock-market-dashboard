@@ -1,5 +1,5 @@
 import streamlit as st
-
+from src.utils.helpers import format_market_cap
 from src.api.stock_api import get_stock_data
 
 
@@ -30,17 +30,32 @@ if st.button("Search"):
     with col1:
         st.metric(
             "Current Price",
-            stock["price"]
+            f"${stock['price']:,.2f}"
         )
 
     with col2:
         st.metric(
-            "Sector",
-            stock["sector"]
+            "Previous Close",
+            f"${stock['previous_close']:,.2f}"
         )
 
     with col3:
         st.metric(
             "Market Cap",
-            stock["market_cap"]
+            format_market_cap(stock["market_cap"])
+        )
+
+
+    col4, col5 = st.columns(2)
+
+    with col4:
+        st.metric(
+            "52 Week High",
+            f"${stock['52_week_high']:,.2f}"
+        )
+
+    with col5:
+        st.metric(
+            "52 Week Low",
+            f"${stock['52_week_low']:,.2f}"
         )

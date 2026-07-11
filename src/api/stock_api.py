@@ -19,6 +19,7 @@ def get_stock_data(ticker_symbol):
     return {
         "name": info.get("longName"),
         "price": info.get("currentPrice"),
+        "previous_close": info.get("previousClose"),
         "market_cap": info.get("marketCap"),
         "sector": info.get("sector"),
         "52_week_high": info.get("fiftyTwoWeekHigh"),
