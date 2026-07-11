@@ -3,6 +3,7 @@ from src.utils.helpers import format_market_cap
 from src.api.stock_api import get_stock_data, get_stock_history
 from src.visualizations.stock_chart import create_price_chart, create_volume_chart
 from src.analytics.stock_metrics import calculate_total_return, calculate_volatility, calculate_moving_averages, calculate_average_volume, calculate_latest_volume_change
+from src.analytics.risk_metrics import calculate_sharpe_ratio, calculate_max_drawdown, calculate_beta
 
 st.set_page_config(
     page_title="Stock Market Dashboard",
@@ -124,6 +125,42 @@ if st.session_state.ticker:
             "Volatility",
             f"{volatility:.2%}"
         )
+    st.subheader("Risk Metrics")
+    
+    sharpe = calculate_sharpe_ratio(history)
+
+    drawdown = calculate_max_drawdown(history)
+
+
+    col8, col9 = st.columns(2)
+
+
+    with col8:
+        st.metric(
+            "Sharpe Ratio",
+            f"{sharpe:.2f}"
+        )
+
+
+    with col9:
+        st.metric(
+            "Maximum Drawdown",
+            f"{drawdown:.2%}"
+        )
+    market_history = get_stock_history(
+    "^GSPC",
+    period
+)
+
+
+    beta = calculate_beta(
+        history,
+        market_history
+    )
+    st.metric(
+        "Beta vs S&P 500",
+        f"{beta:.2f}"
+    )
     st.subheader("Trading Activity")
 
 
