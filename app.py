@@ -191,7 +191,8 @@ with dashboard_tab:
                 f"{volume_change:.2%}"
             )
 with portfolio_tab:
-
+    if "portfolio" not in st.session_state:
+        st.session_state.portfolio = []
     st.header("💼 Portfolio Tracker")
 
     st.write(
@@ -200,14 +201,42 @@ with portfolio_tab:
     ticker_input = st.text_input(
     "Stock ticker",
     "AAPL"
-)
+    )
 
 
-shares_input = st.number_input(
-    "Number of shares",
-    min_value=0.0,
-    value=1.0
-)
-add_stock = st.button(
-    "Add Holding"
-)
+    shares_input = st.number_input(
+        "Number of shares",
+        min_value=0.0,
+        value=1.0
+    )
+    if st.button("Add Holding"):
+
+        price_data = get_stock_data(
+            ticker_input.upper()
+        )
+
+        holding = {
+            "ticker": ticker_input.upper(),
+            "shares": shares_input,
+            "price": price_data["price"]
+        }
+
+        st.session_state.portfolio.append(
+            holding
+        )
+    st.subheader("Current Holdings")
+
+
+    for holding in st.session_state.portfolio:
+
+        value = (
+            holding["shares"]
+            *
+            holding["price"]
+        )
+
+        st.write(
+            f"{holding['ticker']} | "
+            f"{holding['shares']} shares | "
+            f"${value:,.2f}"
+        )
