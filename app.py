@@ -1,9 +1,13 @@
 import streamlit as st
+import pandas as pd
+import plotly.express as px
 from src.utils.helpers import format_market_cap
 from src.api.stock_api import get_stock_data, get_stock_history
 from src.visualizations.stock_chart import create_price_chart, create_volume_chart
 from src.analytics.stock_metrics import calculate_total_return, calculate_volatility, calculate_moving_averages, calculate_average_volume, calculate_latest_volume_change
 from src.analytics.risk_metrics import calculate_sharpe_ratio, calculate_max_drawdown, calculate_beta
+from src.portfolio.portfolio import calculate_portfolio_value, calculate_allocation
+
 
 st.set_page_config(
     page_title="Stock Market Dashboard",
@@ -240,3 +244,38 @@ with portfolio_tab:
             f"{holding['shares']} shares | "
             f"${value:,.2f}"
         )
+    st.subheader("Portfolio Summary")
+
+
+    total_value = calculate_portfolio_value(
+        st.session_state.portfolio
+    )
+
+
+    st.metric(
+        "Total Portfolio Value",
+        f"${total_value:,.2f}"
+    )
+    allocation = calculate_allocation(
+    st.session_state.portfolio
+    )
+    allocation_df = pd.DataFrame(
+    {
+        "Ticker": allocation.keys(),
+        "Allocation": allocation.values()
+    }
+    )
+
+
+    fig = px.pie(
+        allocation_df,
+        names="Ticker",
+        values="Allocation",
+        title="Portfolio Allocation"
+    )
+
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
