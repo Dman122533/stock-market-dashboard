@@ -39,3 +39,21 @@ def calculate_volatility(history):
     volatility = returns.std() * (252 ** 0.5)
 
     return volatility
+def calculate_moving_averages(history):
+    """
+    Calculates 20-day and 50-day moving averages.
+    """
+
+    history["MA20"] = (
+        history["Close"]
+        .rolling(window=20)
+        .mean()
+    )
+
+    history["MA50"] = (
+        history["Close"]
+        .rolling(window=50)
+        .mean()
+    )
+
+    return history

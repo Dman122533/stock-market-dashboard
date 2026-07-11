@@ -2,7 +2,7 @@ import streamlit as st
 from src.utils.helpers import format_market_cap
 from src.api.stock_api import get_stock_data, get_stock_history
 from src.visualizations.stock_chart import create_price_chart
-from src.analytics.stock_metrics import calculate_total_return, calculate_volatility
+from src.analytics.stock_metrics import calculate_total_return, calculate_volatility, calculate_moving_averages
 
 st.set_page_config(
     page_title="Stock Market Dashboard",
@@ -82,6 +82,7 @@ if st.session_state.ticker:
         ticker,
         period
     )
+    history = calculate_moving_averages(history)
     chart = create_price_chart(
         history,
         ticker
