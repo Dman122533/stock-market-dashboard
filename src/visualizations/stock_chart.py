@@ -50,3 +50,25 @@ def create_price_chart(history, ticker):
 
 
     return fig
+def create_volume_chart(history, ticker):
+
+    fig = go.Figure()
+
+
+    fig.add_trace(
+        go.Bar(
+            x=history.index,
+            y=history["Volume"],
+            name="Volume"
+        )
+    )
+
+
+    fig.update_layout(
+        title=f"{ticker} Trading Volume",
+        xaxis_title="Date",
+        yaxis_title="Shares Traded"
+    )
+
+
+    return fig

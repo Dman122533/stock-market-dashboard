@@ -1,8 +1,8 @@
 import streamlit as st
 from src.utils.helpers import format_market_cap
 from src.api.stock_api import get_stock_data, get_stock_history
-from src.visualizations.stock_chart import create_price_chart
-from src.analytics.stock_metrics import calculate_total_return, calculate_volatility, calculate_moving_averages
+from src.visualizations.stock_chart import create_price_chart, create_volume_chart
+from src.analytics.stock_metrics import calculate_total_return, calculate_volatility, calculate_moving_averages, calculate_average_volume, calculate_latest_volume_change
 
 st.set_page_config(
     page_title="Stock Market Dashboard",
@@ -92,6 +92,17 @@ if st.session_state.ticker:
         chart,
         use_container_width=True
     )
+    st.subheader("Trading Volume")
+
+    volume_chart = create_volume_chart(
+        history,
+        ticker
+    )
+
+    st.plotly_chart(
+        volume_chart,
+        use_container_width=True
+    )
     st.subheader("Performance Metrics")
     total_return = calculate_total_return(history)
 
@@ -112,4 +123,27 @@ if st.session_state.ticker:
         st.metric(
             "Volatility",
             f"{volatility:.2%}"
+        )
+    st.subheader("Trading Activity")
+
+
+    average_volume = calculate_average_volume(history)
+
+    volume_change = calculate_latest_volume_change(history)
+
+
+    col6, col7 = st.columns(2)
+
+
+    with col6:
+        st.metric(
+            "Average Volume",
+            f"{average_volume / 1_000_000:.2f}M"
+        )
+
+
+    with col7:
+        st.metric(
+            "Volume Change",
+            f"{volume_change:.2%}"
         )

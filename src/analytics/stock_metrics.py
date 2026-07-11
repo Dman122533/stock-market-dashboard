@@ -57,3 +57,29 @@ def calculate_moving_averages(history):
     )
 
     return history
+def calculate_average_volume(history):
+    """
+    Calculates average daily trading volume.
+    """
+
+    average_volume = history["Volume"].mean()
+
+    return average_volume
+
+
+
+def calculate_latest_volume_change(history):
+    """
+    Calculates the percentage change in volume
+    from the previous trading day.
+    """
+
+    latest_volume = history["Volume"].iloc[-1]
+    previous_volume = history["Volume"].iloc[-2]
+
+    change = (
+        (latest_volume - previous_volume)
+        / previous_volume
+    )
+
+    return change
