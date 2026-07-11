@@ -1,8 +1,8 @@
 import streamlit as st
 from src.utils.helpers import format_market_cap
-from src.api.stock_api import get_stock_data
 from src.api.stock_api import get_stock_data, get_stock_history
 from src.visualizations.stock_chart import create_price_chart
+from src.analytics.stock_metrics import calculate_total_return, calculate_volatility
 
 st.set_page_config(
     page_title="Stock Market Dashboard",
@@ -91,3 +91,24 @@ if st.session_state.ticker:
         chart,
         use_container_width=True
     )
+    st.subheader("Performance Metrics")
+    total_return = calculate_total_return(history)
+
+    volatility = calculate_volatility(history)
+
+
+    col1, col2 = st.columns(2)
+
+
+    with col1:
+        st.metric(
+            "Total Return",
+            f"{total_return:.2%}"
+        )
+
+
+    with col2:
+        st.metric(
+            "Volatility",
+            f"{volatility:.2%}"
+        )
