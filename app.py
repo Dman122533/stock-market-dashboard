@@ -9,6 +9,7 @@ from src.analytics.risk_metrics import calculate_sharpe_ratio, calculate_max_dra
 from src.portfolio.portfolio import calculate_portfolio_value, calculate_allocation
 from src.portfolio.portfolio_metrics import get_number_of_holdings, get_largest_position, get_average_position_size
 from src.portfolio.sector_analysis import calculate_sector_allocation
+from src.portfolio.portfolio_performance import calculate_portfolio_history
 
 
 
@@ -451,3 +452,16 @@ with portfolio_tab:
         sector_fig,
         use_container_width=True
     )
+    st.subheader("Portfolio Performance")
+
+
+    if st.session_state.portfolio:
+
+        portfolio_history = calculate_portfolio_history(
+            st.session_state.portfolio
+        )
+
+
+        st.line_chart(
+            portfolio_history
+        )
