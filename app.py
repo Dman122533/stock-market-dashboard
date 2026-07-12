@@ -7,6 +7,8 @@ from src.visualizations.stock_chart import create_price_chart, create_volume_cha
 from src.analytics.stock_metrics import calculate_total_return, calculate_volatility, calculate_moving_averages, calculate_average_volume, calculate_latest_volume_change
 from src.analytics.risk_metrics import calculate_sharpe_ratio, calculate_max_drawdown, calculate_beta
 from src.portfolio.portfolio import calculate_portfolio_value, calculate_allocation
+from src.portfolio.portfolio_metrics import get_number_of_holdings, get_largest_position, get_average_position_size
+
 
 
 st.set_page_config(
@@ -199,6 +201,61 @@ with portfolio_tab:
         st.session_state.portfolio = []
     st.header("💼 Portfolio Tracker")
 
+    st.subheader("Portfolio Overview")
+    if st.session_state.portfolio:
+
+        total_value = calculate_portfolio_value(
+            st.session_state.portfolio
+        )
+
+        holdings_count = get_number_of_holdings(
+            st.session_state.portfolio
+        )
+
+        largest_position = get_largest_position(
+            st.session_state.portfolio
+        )
+
+        average_position = get_average_position_size(
+            st.session_state.portfolio
+        )
+
+
+        col1, col2, col3, col4 = st.columns(4)
+
+
+        with col1:
+            st.metric(
+                "Portfolio Value",
+                f"${total_value:,.2f}"
+            )
+
+
+        with col2:
+            st.metric(
+                "Holdings",
+                holdings_count
+            )
+
+
+        with col3:
+            st.metric(
+                "Largest Position",
+                largest_position
+            )
+
+
+        with col4:
+            st.metric(
+                "Avg Position",
+                f"${average_position:,.2f}"
+            )
+
+    else:
+
+        st.info(
+            "Add holdings to view portfolio statistics."
+        )
     st.write(
         "Enter your stock holdings below."
     )
@@ -242,6 +299,7 @@ with portfolio_tab:
                     "price": price_data["price"]
                 }
             )
+        st.rerun()
     st.subheader("Remove Holding")
     if st.session_state.portfolio:
 
