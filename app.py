@@ -12,6 +12,7 @@ from src.portfolio.sector_analysis import calculate_sector_allocation
 from src.portfolio.portfolio_performance import calculate_portfolio_history
 from src.portfolio.performance_metrics import calculate_total_return, calculate_volatility, calculate_sharpe_ratio
 from src.portfolio.benchmark import get_benchmark_history, normalize_series, calculate_benchmark_return
+from src.portfolio.risk_metrics import calculate_max_drawdown, calculate_best_day, calculate_worst_day
 
 
 
@@ -422,6 +423,18 @@ with portfolio_tab:
         sharpe_ratio = calculate_sharpe_ratio(
             portfolio_history
         )
+        
+        max_drawdown = calculate_max_drawdown(
+            portfolio_history
+        )
+
+        best_day = calculate_best_day(
+            portfolio_history
+        )
+
+        worst_day = calculate_worst_day(
+            portfolio_history
+        )
 
 
         col1, col2, col3 = st.columns(3)
@@ -450,6 +463,31 @@ with portfolio_tab:
                 f"{sharpe_ratio:.2f}"
             )
 
+        st.subheader("Risk Analysis")
+            
+
+        col1, col2, col3 = st.columns(3)
+
+
+        with col1:
+            st.metric(
+                "Maximum Drawdown",
+                f"{max_drawdown:.2%}"
+            )
+
+
+        with col2:
+            st.metric(
+                "Best Day",
+                f"{best_day:.2%}"
+            )
+
+
+        with col3:
+            st.metric(
+                "Worst Day",
+                f"{worst_day:.2%}"
+            )
 
         st.subheader("Portfolio vs S&P 500")
 
