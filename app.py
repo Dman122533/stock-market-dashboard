@@ -10,6 +10,8 @@ from src.portfolio.portfolio import calculate_portfolio_value, calculate_allocat
 from src.portfolio.portfolio_metrics import get_number_of_holdings, get_largest_position, get_average_position_size
 from src.portfolio.sector_analysis import calculate_sector_allocation
 from src.portfolio.portfolio_performance import calculate_portfolio_history
+from src.portfolio.performance_metrics import calculate_total_return, calculate_volatility, calculate_sharpe_ratio
+
 
 
 
@@ -277,6 +279,11 @@ with portfolio_tab:
         ticker = ticker_input.upper()
 
         price_data = get_stock_data(ticker)
+        if price_data["price"] is None:
+            st.error(
+                "Unable to retrieve stock price. Check the ticker."
+            )
+            st.stop()
 
         existing_holding = None
 
@@ -361,6 +368,7 @@ with portfolio_tab:
     portfolio_df = pd.DataFrame(
         portfolio_rows
     )
+    
     if not portfolio_df.empty:
 
         display_df = portfolio_df.copy()
@@ -389,6 +397,61 @@ with portfolio_tab:
     else:
 
         st.info("Add a stock holding to view your portfolio.")
+    st.subheader("Portfolio Performance")
+
+
+    if st.session_state.portfolio:
+
+        portfolio_history = calculate_portfolio_history(
+            st.session_state.portfolio
+        )
+
+
+        st.line_chart(
+            portfolio_history
+        )
+        st.subheader("Performance Metrics")
+
+
+        total_return = calculate_total_return(
+            portfolio_history
+        )
+
+        volatility = calculate_volatility(
+            portfolio_history
+        )
+
+        sharpe_ratio = calculate_sharpe_ratio(
+            portfolio_history
+        )
+
+
+        col1, col2, col3 = st.columns(3)
+
+
+        with col1:
+
+            st.metric(
+                "Total Return",
+                f"{total_return:.2%}"
+            )
+
+
+        with col2:
+
+            st.metric(
+                "Volatility",
+                f"{volatility:.2%}"
+            )
+
+
+        with col3:
+
+            st.metric(
+                "Sharpe Ratio",
+                f"{sharpe_ratio:.2f}"
+            )
+
     if st.session_state.portfolio:
 
         st.subheader("Portfolio Summary")
@@ -452,16 +515,3 @@ with portfolio_tab:
         sector_fig,
         use_container_width=True
     )
-    st.subheader("Portfolio Performance")
-
-
-    if st.session_state.portfolio:
-
-        portfolio_history = calculate_portfolio_history(
-            st.session_state.portfolio
-        )
-
-
-        st.line_chart(
-            portfolio_history
-        )

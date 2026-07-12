@@ -8,7 +8,7 @@ def calculate_portfolio_history(positions, period="1y"):
     Calculates historical portfolio value over time.
     """
 
-    portfolio_history = None
+    portfolio_history = pd.Series(dtype=float)
 
 
     for position in positions:
@@ -24,25 +24,24 @@ def calculate_portfolio_history(positions, period="1y"):
         )
 
 
-        prices = stock_history["Close"]
+        prices = stock_history["Close"].squeeze()
 
 
         position_value = prices * shares
 
 
-        if portfolio_history is None:
+        if portfolio_history.empty:
 
             portfolio_history = position_value
 
         else:
 
             portfolio_history = (
-                portfolio_history
-                .add(
+                portfolio_history.add(
                     position_value,
                     fill_value=0
                 )
             )
 
-
+    print(portfolio_history)
     return portfolio_history
