@@ -8,6 +8,7 @@ from src.analytics.stock_metrics import calculate_total_return, calculate_volati
 from src.analytics.risk_metrics import calculate_sharpe_ratio, calculate_max_drawdown, calculate_beta
 from src.portfolio.portfolio import calculate_portfolio_value, calculate_allocation
 from src.portfolio.portfolio_metrics import get_number_of_holdings, get_largest_position, get_average_position_size
+from src.portfolio.sector_analysis import calculate_sector_allocation
 
 
 
@@ -289,6 +290,7 @@ with portfolio_tab:
 
             existing_holding["shares"] += shares_input
             existing_holding["price"] = price_data["price"]
+            existing_holding["sector"] = price_data["sector"]
 
         else:
 
@@ -296,7 +298,8 @@ with portfolio_tab:
                 {
                     "ticker": ticker,
                     "shares": shares_input,
-                    "price": price_data["price"]
+                    "price": price_data["price"],
+                    "sector": price_data["sector"]
                 }
             )
         st.rerun()
@@ -420,3 +423,31 @@ with portfolio_tab:
             fig,
             use_container_width=True
         )
+    st.subheader("Sector Allocation")
+
+
+    sector_allocation = calculate_sector_allocation(
+        st.session_state.portfolio
+    )
+
+
+    sector_df = pd.DataFrame(
+        {
+            "Sector": sector_allocation.keys(),
+            "Allocation": sector_allocation.values()
+        }
+    )
+
+
+    sector_fig = px.pie(
+        sector_df,
+        names="Sector",
+        values="Allocation",
+        title="Portfolio Sector Breakdown"
+    )
+
+
+    st.plotly_chart(
+        sector_fig,
+        use_container_width=True
+    )
