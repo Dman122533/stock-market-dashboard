@@ -11,6 +11,7 @@ from src.portfolio.portfolio_metrics import get_number_of_holdings, get_largest_
 from src.portfolio.sector_analysis import calculate_sector_allocation
 from src.portfolio.portfolio_performance import calculate_portfolio_history
 from src.portfolio.performance_metrics import calculate_total_return, calculate_volatility, calculate_sharpe_ratio
+from src.portfolio.benchmark import get_benchmark_history, normalize_series, calculate_benchmark_return
 
 
 
@@ -406,11 +407,7 @@ with portfolio_tab:
         portfolio_history = calculate_portfolio_history(
             st.session_state.portfolio
         )
-
-
-        st.line_chart(
-            portfolio_history
-        )
+        st.line_chart(portfolio_history)
         st.subheader("Performance Metrics")
 
 
@@ -453,6 +450,71 @@ with portfolio_tab:
                 f"{sharpe_ratio:.2f}"
             )
 
+
+        st.subheader("Portfolio vs S&P 500")
+
+
+        benchmark_history = get_benchmark_history()
+
+
+        comparison_df = pd.DataFrame(
+            {
+                "Portfolio": normalize_series(portfolio_history),
+                "S&P 500": normalize_series(benchmark_history)
+            }
+        )
+
+
+        comparison_df = comparison_df.dropna()
+
+
+        st.line_chart(
+            comparison_df
+        )
+        st.subheader("Benchmark Performance")
+
+
+        portfolio_return = calculate_total_return(
+            portfolio_history
+        )
+
+
+        benchmark_return = calculate_benchmark_return(
+            benchmark_history
+        )
+
+
+        alpha = (
+            portfolio_return
+            -
+            benchmark_return
+        )
+
+
+        col1, col2, col3 = st.columns(3)
+
+
+        with col1:
+            st.metric(
+                "Portfolio Return",
+                f"{portfolio_return:.2%}"
+            )
+
+
+        with col2:
+            st.metric(
+                "S&P 500 Return",
+                f"{benchmark_return:.2%}"
+            )
+
+
+        with col3:
+            st.metric(
+                "Alpha",
+                f"{alpha:.2%}"
+            )
+        
+        
     if st.session_state.portfolio:
 
         st.subheader("Portfolio Summary")
