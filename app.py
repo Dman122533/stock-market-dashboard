@@ -215,67 +215,125 @@ with portfolio_tab:
     )
     if st.button("Add Holding"):
 
-        price_data = get_stock_data(
-            ticker_input.upper()
-        )
+        ticker = ticker_input.upper()
 
-        holding = {
-            "ticker": ticker_input.upper(),
-            "shares": shares_input,
-            "price": price_data["price"]
-        }
+        price_data = get_stock_data(ticker)
 
-        st.session_state.portfolio.append(
-            holding
-        )
+        existing_holding = None
+
+        for holding in st.session_state.portfolio:
+
+            if holding["ticker"] == ticker:
+
+                existing_holding = holding
+                break
+
+        if existing_holding:
+
+            existing_holding["shares"] += shares_input
+            existing_holding["price"] = price_data["price"]
+
+        else:
+
+            st.session_state.portfolio.append(
+                {
+                    "ticker": ticker,
+                    "shares": shares_input,
+                    "price": price_data["price"]
+                }
+            )
     st.subheader("Current Holdings")
 
 
-    for holding in st.session_state.portfolio:
-
-        value = (
-            holding["shares"]
-            *
-            holding["price"]
-        )
-
-        st.write(
-            f"{holding['ticker']} | "
-            f"{holding['shares']} shares | "
-            f"${value:,.2f}"
-        )
-    st.subheader("Portfolio Summary")
-
+    portfolio_rows = []
 
     total_value = calculate_portfolio_value(
         st.session_state.portfolio
     )
 
+    for holding in st.session_state.portfolio:
 
-    st.metric(
-        "Total Portfolio Value",
-        f"${total_value:,.2f}"
-    )
-    allocation = calculate_allocation(
-    st.session_state.portfolio
-    )
-    allocation_df = pd.DataFrame(
-    {
-        "Ticker": allocation.keys(),
-        "Allocation": allocation.values()
-    }
-    )
+        position_value = (
+            holding["shares"]
+            * holding["price"]
+        )
 
+        allocation = (
+            position_value / total_value
+        ) if total_value > 0 else 0
 
-    fig = px.pie(
-        allocation_df,
-        names="Ticker",
-        values="Allocation",
-        title="Portfolio Allocation"
+        portfolio_rows.append(
+            {
+                "Ticker": holding["ticker"],
+                "Shares": holding["shares"],
+                "Current Price": holding["price"],
+                "Position Value": position_value,
+                "Allocation": allocation
+            }
+        )
+    portfolio_df = pd.DataFrame(
+        portfolio_rows
     )
+    if not portfolio_df.empty:
 
+        display_df = portfolio_df.copy()
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+        display_df["Current Price"] = (
+            display_df["Current Price"]
+            .map(lambda x: f"${x:,.2f}")
+        )
+
+        display_df["Position Value"] = (
+            display_df["Position Value"]
+            .map(lambda x: f"${x:,.2f}")
+        )
+
+        display_df["Allocation"] = (
+            display_df["Allocation"]
+            .map(lambda x: f"{x:.1%}")
+        )
+
+        st.dataframe(
+            display_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+    else:
+
+        st.info("Add a stock holding to view your portfolio.")
+    if st.session_state.portfolio:
+
+        st.subheader("Portfolio Summary")
+
+        total_value = calculate_portfolio_value(
+            st.session_state.portfolio
+        )
+
+        st.metric(
+            "Total Portfolio Value",
+            f"${total_value:,.2f}"
+        )
+
+        allocation = calculate_allocation(
+            st.session_state.portfolio
+        )
+
+        allocation_df = pd.DataFrame(
+            {
+                "Ticker": allocation.keys(),
+                "Allocation": allocation.values()
+            }
+        )
+
+        fig = px.pie(
+            allocation_df,
+            names="Ticker",
+            values="Allocation",
+            title="Portfolio Allocation"
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
