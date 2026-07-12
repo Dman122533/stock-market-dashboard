@@ -19,7 +19,7 @@ def get_stock_data(ticker_symbol):
         "price": info.get("currentPrice", info.get("regularMarketPrice")),
         "previous_close": info.get("previousClose"),
         "market_cap": info.get("marketCap"),
-        "sector": info.get("sector"),
+        "sector": info.get("sector", "Unknown"),
         "52_week_high": info.get("fiftyTwoWeekHigh"),
         "52_week_low": info.get("fiftyTwoWeekLow")
     }

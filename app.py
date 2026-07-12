@@ -299,9 +299,9 @@ with portfolio_tab:
             existing_holding["shares"] += shares_input
             existing_holding["price"] = price_data["price"]
             existing_holding["sector"] = price_data["sector"]
-
+            
         else:
-
+        
             st.session_state.portfolio.append(
                 {
                     "ticker": ticker,
@@ -310,6 +310,7 @@ with portfolio_tab:
                     "sector": price_data["sector"]
                 }
             )
+            st.write(st.session_state.portfolio)
         st.rerun()
     st.subheader("Remove Holding")
     if st.session_state.portfolio:
