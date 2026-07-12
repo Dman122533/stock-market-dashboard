@@ -242,6 +242,31 @@ with portfolio_tab:
                     "price": price_data["price"]
                 }
             )
+    st.subheader("Remove Holding")
+    if st.session_state.portfolio:
+
+        holdings_list = [
+            holding["ticker"]
+            for holding in st.session_state.portfolio
+        ]
+
+        selected_stock = st.selectbox(
+            "Select a stock to remove",
+            holdings_list
+        )
+        if st.button("Remove Holding"):
+
+            st.session_state.portfolio = [
+                holding
+                for holding in st.session_state.portfolio
+                if holding["ticker"] != selected_stock
+            ]
+
+            st.success(
+                f"{selected_stock} removed from portfolio"
+            )
+
+            st.rerun()
     st.subheader("Current Holdings")
 
 
