@@ -13,7 +13,7 @@ from src.portfolio.portfolio_performance import calculate_portfolio_history
 from src.portfolio.performance_metrics import calculate_total_return, calculate_volatility, calculate_sharpe_ratio
 from src.portfolio.benchmark import get_benchmark_history, normalize_series, calculate_benchmark_return
 from src.portfolio.risk_metrics import calculate_max_drawdown, calculate_best_day, calculate_worst_day
-
+from src.visualizations.risk_charts import create_drawdown_chart, create_returns_distribution
 
 
 
@@ -488,6 +488,27 @@ with portfolio_tab:
                 "Worst Day",
                 f"{worst_day:.2%}"
             )
+        st.subheader("Risk Visualization")
+        drawdown_fig = create_drawdown_chart(
+            portfolio_history
+        )
+
+
+        st.plotly_chart(
+            drawdown_fig,
+            use_container_width=True
+        )
+
+
+        returns_fig = create_returns_distribution(
+            portfolio_history
+        )
+
+
+        st.plotly_chart(
+            returns_fig,
+            use_container_width=True
+        )
 
         st.subheader("Portfolio vs S&P 500")
 
