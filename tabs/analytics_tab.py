@@ -20,7 +20,7 @@ def show_analytics_tab():
     portfolio_history = calculate_portfolio_history(
         st.session_state.portfolio
     )
-    st.subheader("Portfolio Performance")
+    st.subheader("📈 Portfolio Growth Over Time")
 
 
     if st.session_state.portfolio:
@@ -83,7 +83,7 @@ def show_analytics_tab():
                 f"{sharpe_ratio:.2f}"
             )
 
-        st.subheader("Risk Analysis")
+        st.subheader("📉 Portfolio Drawdown Risk")
             
 
         col1, col2, col3 = st.columns(3)
@@ -131,7 +131,7 @@ def show_analytics_tab():
             use_container_width=True
         )
 
-        st.subheader("Portfolio vs S&P 500")
+        st.subheader("📊 Portfolio Performance vs Market Benchmark")
 
 
         benchmark_history = get_benchmark_history()
