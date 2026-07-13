@@ -1,3 +1,5 @@
+from src.api.stock_api import get_stock_data
+
 def calculate_position_value(shares, price):
     """
     Calculates the value of a stock position.
@@ -58,3 +60,19 @@ def calculate_allocation(positions):
         )
 
     return allocation
+
+def refresh_portfolio_prices(portfolio):
+    """
+    Updates every holding with the latest market price.
+    """
+
+    for holding in portfolio:
+
+        stock = get_stock_data(
+            holding["ticker"]
+        )
+
+        if stock["price"] is not None:
+            holding["price"] = stock["price"]
+
+    return portfolio
