@@ -6,12 +6,7 @@ from src.portfolio.portfolio import calculate_portfolio_value, calculate_allocat
 from src.portfolio.portfolio_metrics import get_number_of_holdings, get_largest_position, get_average_position_size
 from src.portfolio.sector_analysis import calculate_sector_allocation
 from src.visualizations.chart_theme import apply_chart_theme
-from src.portfolio.portfolio_performance import calculate_portfolio_history
-from src.portfolio.performance_metrics import calculate_total_return, calculate_volatility, calculate_sharpe_ratio
-from src.portfolio.benchmark import get_benchmark_history, normalize_series, calculate_benchmark_return
-from src.portfolio.risk_metrics import calculate_max_drawdown, calculate_best_day, calculate_worst_day
-from src.visualizations.risk_charts import create_drawdown_chart, create_returns_distribution
-from src.api.stock_api import get_stock_data, get_stock_history
+from src.api.stock_api import get_stock_data
 from database.database import get_holdings, add_holding, remove_holding, update_holding, update_price
 
 def show_portfolio_tab():
