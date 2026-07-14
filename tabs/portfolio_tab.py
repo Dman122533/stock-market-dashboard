@@ -16,7 +16,7 @@ from database.database import get_holdings, add_holding, remove_holding, update_
 
 def show_portfolio_tab():
     if "portfolio" not in st.session_state:
-        st.session_state.portfolio = get_holdings()
+        st.session_state.portfolio = get_holdings(st.session_state.user["id"])
     st.header("💼 Portfolio Dashboard")
 
     st.subheader("📈 Portfolio Overview")
@@ -264,6 +264,7 @@ def show_portfolio_tab():
                 existing_holding["sector"] = price_data["sector"]
 
                 update_holding(
+                    st.session_state.user["id"],
                     ticker,
                     existing_holding["shares"],
                     price_data["price"],
@@ -286,6 +287,7 @@ def show_portfolio_tab():
 
 
                 add_holding(
+                    st.session_state.user["id"],
                     ticker,
                     shares_input,
                     price_data["price"],
@@ -306,7 +308,7 @@ def show_portfolio_tab():
             )
             if st.button("➖ Remove Holding"):
 
-                remove_holding(selected_stock)
+                remove_holding(st.session_state.user["id"], selected_stock)
 
                 st.session_state.portfolio = [
                     holding
@@ -328,6 +330,7 @@ def show_portfolio_tab():
                 for holding in st.session_state.portfolio:
 
                     update_price(
+                        st.session_state.user["id"],
                         holding["ticker"],
                         holding["price"]
                     )

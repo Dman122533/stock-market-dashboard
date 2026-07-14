@@ -25,6 +25,8 @@ def create_tables():
 
             id INTEGER PRIMARY KEY AUTOINCREMENT,
 
+            user_id INTEGER NOT NULL,
+
             ticker TEXT NOT NULL,
 
             shares REAL NOT NULL,
@@ -36,12 +38,25 @@ def create_tables():
         )
         """
     )
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS users (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            username TEXT UNIQUE NOT NULL,
+
+            password TEXT NOT NULL
+
+        )
+        """
+    )
 
 
     conn.commit()
 
     conn.close()
-def add_holding(ticker, shares, price, sector):
+def add_holding(user_id, ticker, shares, price, sector):
     conn = get_connection()
 
     cursor = conn.cursor()
@@ -51,16 +66,18 @@ def add_holding(ticker, shares, price, sector):
         """
         INSERT INTO holdings
         (
+            user_id,
             ticker,
             shares,
             price,
             sector
         )
 
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?)
 
         """,
         (
+            user_id,
             ticker,
             shares,
             price,
@@ -72,7 +89,7 @@ def add_holding(ticker, shares, price, sector):
     conn.commit()
 
     conn.close()
-def get_holdings():
+def get_holdings(user_id):
 
     conn = get_connection()
 
@@ -83,7 +100,9 @@ def get_holdings():
         """
         SELECT ticker, shares, price, sector
         FROM holdings
-        """
+        WHERE user_id = ?
+        """,
+        (user_id,)
     )
 
 
@@ -110,7 +129,7 @@ def get_holdings():
 
     return holdings
 
-def remove_holding(ticker):
+def remove_holding(user_id, ticker):
 
     conn = get_connection()
 
@@ -120,15 +139,16 @@ def remove_holding(ticker):
         """
         DELETE FROM holdings
         WHERE ticker = ?
+        AND user_id = ?
         """,
-        (ticker,)
+        (ticker, user_id)
     )
 
     conn.commit()
 
     conn.close()
 
-def update_holding(ticker, shares, price, sector):
+def update_holding(user_id, ticker, shares, price, sector):
 
     conn = get_connection()
 
@@ -145,13 +165,15 @@ def update_holding(ticker, shares, price, sector):
             sector = ?
 
         WHERE ticker = ?
+        AND user_id = ?
 
         """,
         (
             shares,
             price,
             sector,
-            ticker
+            ticker,
+            user_id
         )
     )
 
@@ -186,3 +208,4 @@ def update_price(ticker, price):
     conn.commit()
 
     conn.close()
+
