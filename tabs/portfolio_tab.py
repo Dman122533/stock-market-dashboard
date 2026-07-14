@@ -12,10 +12,11 @@ from src.portfolio.benchmark import get_benchmark_history, normalize_series, cal
 from src.portfolio.risk_metrics import calculate_max_drawdown, calculate_best_day, calculate_worst_day
 from src.visualizations.risk_charts import create_drawdown_chart, create_returns_distribution
 from src.api.stock_api import get_stock_data, get_stock_history
+from database.database import get_holdings, add_holding, remove_holding, update_holding, update_price
 
 def show_portfolio_tab():
     if "portfolio" not in st.session_state:
-        st.session_state.portfolio = []
+        st.session_state.portfolio = get_holdings()
     st.header("💼 Portfolio Dashboard")
 
     st.subheader("📈 Portfolio Overview")
@@ -261,18 +262,35 @@ def show_portfolio_tab():
                 existing_holding["shares"] += shares_input
                 existing_holding["price"] = price_data["price"]
                 existing_holding["sector"] = price_data["sector"]
-                
+
+                update_holding(
+                    ticker,
+                    existing_holding["shares"],
+                    price_data["price"],
+                    price_data["sector"]
+                )
+                            
             else:
             
+                new_holding = {
+                    "ticker": ticker,
+                    "shares": shares_input,
+                    "price": price_data["price"],
+                    "sector": price_data["sector"]
+                }
+
+
                 st.session_state.portfolio.append(
-                    {
-                        "ticker": ticker,
-                        "shares": shares_input,
-                        "price": price_data["price"],
-                        "sector": price_data["sector"]
-                    }
+                    new_holding
                 )
-                st.write(st.session_state.portfolio)
+
+
+                add_holding(
+                    ticker,
+                    shares_input,
+                    price_data["price"],
+                    price_data["sector"]
+                )
             st.rerun()
         
         if st.session_state.portfolio:
@@ -287,6 +305,8 @@ def show_portfolio_tab():
                 holdings_list
             )
             if st.button("➖ Remove Holding"):
+
+                remove_holding(selected_stock)
 
                 st.session_state.portfolio = [
                     holding
@@ -305,5 +325,11 @@ def show_portfolio_tab():
                 refresh_portfolio_prices(
                     st.session_state.portfolio
                 )
+                for holding in st.session_state.portfolio:
+
+                    update_price(
+                        holding["ticker"],
+                        holding["price"]
+                    )
             st.success("Portfolio prices updated")
             st.rerun()
