@@ -182,7 +182,7 @@ def update_holding(user_id, ticker, shares, price, sector):
 
     conn.close()
 
-def update_price(ticker, price):
+def update_price(user_id, ticker, price):
 
     conn = get_connection()
 
@@ -196,11 +196,12 @@ def update_price(ticker, price):
         SET price = ?
 
         WHERE ticker = ?
-
+        AND user_id = ?
         """,
         (
             price,
-            ticker
+            ticker,
+            user_id
         )
     )
 
