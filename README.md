@@ -2,6 +2,9 @@
 
 A full-stack personal finance and portfolio analytics application built with Python and Streamlit. This application allows users to analyze individual stocks, manage personal investment portfolios, and evaluate portfolio performance using financial metrics and benchmark comparisons.
 
+## Screenshots
+
+
 ## Features
 
 ### Stock Analysis Dashboard
@@ -46,6 +49,24 @@ A full-stack personal finance and portfolio analytics application built with Pyt
 - SQLite database integration
 
 ---
+# Project Structure
+
+stock-market-dashboard/
+│
+├── app.py
+├── database/
+│ └── database.py
+├── tabs/
+│ ├── stock_tab.py
+│ ├── portfolio_tab.py
+│ └── analytics_tab.py
+├── src/
+│ ├── api/
+│ ├── portfolio/
+│ ├── visualizations/
+│ └── analytics/
+├── requirements.txt
+└── README.md
 
 # Technologies Used
 
