@@ -30,9 +30,18 @@ def show_portfolio_tab():
             st.session_state.portfolio
         )
 
-        average_position = get_average_position_size(
-            st.session_state.portfolio
+        total_cost = sum(
+            holding["shares"] * holding["cost_basis"]
+            for holding in st.session_state.portfolio
         )
+
+        total_gain_loss = (
+            total_value - total_cost
+        )
+
+        total_return = (
+            total_gain_loss / total_cost
+        ) if total_cost > 0 else 0
 
 
         col1, col2, col3, col4 = st.columns(4)
@@ -54,15 +63,16 @@ def show_portfolio_tab():
 
         with col3:
             st.metric(
-                "📈 Largest Position",
-                largest_position
+                "📈 Total Gain/Loss",
+                f"${total_gain_loss:,.2f}",
+                delta=f"{total_return:.2%}"
             )
 
 
         with col4:
             st.metric(
-                "📌 Avg Position",
-                f"${average_position:,.2f}"
+                "📌 Total Return",
+                f"{total_return:.2%}"
             )
         
     else:
@@ -156,6 +166,16 @@ def show_portfolio_tab():
             * holding["price"]
         )
 
+        gain_loss = (
+            holding["price"]
+            - holding["cost_basis"]
+        ) * holding["shares"]
+
+        gain_loss_percent = (
+            (holding["price"] - holding["cost_basis"])
+            / holding["cost_basis"]
+        ) if holding["cost_basis"] > 0 else 0
+
         allocation = (
             position_value / total_value
         ) if total_value > 0 else 0
@@ -166,6 +186,9 @@ def show_portfolio_tab():
                 "Shares": round(holding["shares"], 2),
                 "Price": holding["price"],
                 "Value": position_value,
+                "Cost Basis": holding["cost_basis"],
+                "Gain/Loss": gain_loss,
+                "Gain/Loss %": gain_loss_percent,
                 "Allocation": allocation
             }
         )
@@ -185,6 +208,16 @@ def show_portfolio_tab():
         display_df["Value"] = (
             display_df["Value"]
             .map(lambda x: f"${x:,.2f}")
+        )
+
+        display_df["Gain/Loss"] = (
+            display_df["Gain/Loss"]
+            .map(lambda x: f"${x:,.2f}")
+        )
+
+        display_df["Gain/Loss %"] = (
+            display_df["Gain/Loss %"]
+            .map(lambda x: f"{x:.2%}")
         )
 
         display_df["Allocation"] = (
@@ -232,6 +265,13 @@ def show_portfolio_tab():
             min_value=0.0,
             value=1.0
         )
+
+        cost_basis_input = st.number_input(
+            "Average Purchase Price ($)",
+            min_value=0.0,
+            value=100.0,
+            step=0.01
+        )
         if st.button("➕ Add Holding"):
 
             ticker = ticker_input.upper()
@@ -254,7 +294,26 @@ def show_portfolio_tab():
 
             if existing_holding:
 
-                existing_holding["shares"] += shares_input
+                old_cost = (
+                    existing_holding["shares"]
+                    * existing_holding["cost_basis"]
+                )
+
+                new_cost = (
+                    shares_input
+                    * cost_basis_input
+                )
+
+                new_total_shares = (
+                    existing_holding["shares"]
+                    + shares_input
+                )
+
+                existing_holding["cost_basis"] = (
+                    old_cost + new_cost
+                ) / new_total_shares
+
+                existing_holding["shares"] = new_total_shares
                 existing_holding["price"] = price_data["price"]
                 existing_holding["sector"] = price_data["sector"]
 
@@ -263,6 +322,7 @@ def show_portfolio_tab():
                     ticker,
                     existing_holding["shares"],
                     price_data["price"],
+                    existing_holding["cost_basis"],
                     price_data["sector"]
                 )
                             
@@ -272,6 +332,7 @@ def show_portfolio_tab():
                     "ticker": ticker,
                     "shares": shares_input,
                     "price": price_data["price"],
+                    "cost_basis": cost_basis_input,
                     "sector": price_data["sector"]
                 }
 
@@ -286,6 +347,7 @@ def show_portfolio_tab():
                     ticker,
                     shares_input,
                     price_data["price"],
+                    cost_basis_input,
                     price_data["sector"]
                 )
             st.rerun()

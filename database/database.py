@@ -33,6 +33,8 @@ def create_tables():
 
             price REAL,
 
+            cost_basis REAL,
+
             sector TEXT
 
         )
@@ -56,7 +58,7 @@ def create_tables():
     conn.commit()
 
     conn.close()
-def add_holding(user_id, ticker, shares, price, sector):
+def add_holding(user_id, ticker, shares, price, cost_basis, sector):
     conn = get_connection()
 
     cursor = conn.cursor()
@@ -70,10 +72,11 @@ def add_holding(user_id, ticker, shares, price, sector):
             ticker,
             shares,
             price,
+            cost_basis,
             sector
         )
 
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
 
         """,
         (
@@ -81,6 +84,7 @@ def add_holding(user_id, ticker, shares, price, sector):
             ticker,
             shares,
             price,
+            cost_basis,
             sector
         )
     )
@@ -98,7 +102,7 @@ def get_holdings(user_id):
 
     cursor.execute(
         """
-        SELECT ticker, shares, price, sector
+        SELECT ticker, shares, price, cost_basis, sector
         FROM holdings
         WHERE user_id = ?
         """,
@@ -122,7 +126,8 @@ def get_holdings(user_id):
                 "ticker": row[0],
                 "shares": row[1],
                 "price": row[2],
-                "sector": row[3]
+                "cost_basis": row[3],
+                "sector": row[4]
             }
         )
 
@@ -148,7 +153,7 @@ def remove_holding(user_id, ticker):
 
     conn.close()
 
-def update_holding(user_id, ticker, shares, price, sector):
+def update_holding(user_id, ticker, shares, price, cost_basis, sector):
 
     conn = get_connection()
 
@@ -162,6 +167,7 @@ def update_holding(user_id, ticker, shares, price, sector):
         SET
             shares = ?,
             price = ?,
+            cost_basis = ?,
             sector = ?
 
         WHERE ticker = ?
@@ -171,6 +177,7 @@ def update_holding(user_id, ticker, shares, price, sector):
         (
             shares,
             price,
+            cost_basis,
             sector,
             ticker,
             user_id
