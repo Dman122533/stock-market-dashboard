@@ -24,6 +24,12 @@ def show_stock_tab():
         ticker = st.session_state.ticker
 
         stock = get_stock_data(ticker)
+        if stock is None or stock["price"] is None:
+            st.error(
+                "Unable to find this ticker. Please check the symbol."
+            )
+            st.stop()
+
         st.subheader(stock["name"])
 
         col1, col2, col3 = st.columns(3)
@@ -31,13 +37,13 @@ def show_stock_tab():
         with col1:
             st.metric(
                 "Current Price",
-                f"${stock['price']:,.2f}"
+                f"${stock['price']:,.2f}" if stock["price"] else "N/A"
             )
 
         with col2:
             st.metric(
                 "Previous Close",
-                f"${stock['previous_close']:,.2f}"
+                f"${stock['previous_close']:,.2f}" 
             )
 
         with col3:

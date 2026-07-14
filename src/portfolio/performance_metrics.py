@@ -50,7 +50,10 @@ def calculate_volatility(history):
 
 
 
-def calculate_sharpe_ratio(history):
+def calculate_sharpe_ratio(
+    history,
+    risk_free_rate=0.04
+):
     """
     Calculates annualized Sharpe ratio.
     """
@@ -59,8 +62,21 @@ def calculate_sharpe_ratio(history):
         history
     )
 
+    if daily_returns.empty:
+        return 0
+
+    daily_risk_free_rate = (
+        risk_free_rate / 252
+    )
+
+    excess_returns = (
+        daily_returns
+        -
+        daily_risk_free_rate
+    )
+
     average_return = (
-        daily_returns.mean()
+        excess_returns.mean()
         *
         252
     )
@@ -73,7 +89,6 @@ def calculate_sharpe_ratio(history):
 
     if volatility == 0 or pd.isna(volatility):
         return 0
-
 
     sharpe_ratio = (
         average_return

@@ -16,10 +16,6 @@ def show_analytics_tab():
         st.warning("Add holdings to view analytics.")
         return
 
-
-    portfolio_history = calculate_portfolio_history(
-        st.session_state.portfolio
-    )
     st.subheader("📈 Portfolio Growth Over Time")
 
 
