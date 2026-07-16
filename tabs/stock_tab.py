@@ -32,7 +32,7 @@ def show_stock_tab():
 
         st.subheader(stock["name"])
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
 
         with col1:
             st.metric(
@@ -49,22 +49,30 @@ def show_stock_tab():
         with col3:
             st.metric(
                 "Market Cap",
-                format_market_cap(stock["market_cap"])
+                format_market_cap(stock.get("market_cap"))
             )
-
-
-        col4, col5 = st.columns(2)
-
         with col4:
             st.metric(
-                "52 Week High",
-                f"${stock['52_week_high']:,.2f}"
+                "Asset Type",
+                stock["asset_type"].title()
             )
+
+
+        col5, col6 = st.columns(2)
+
+        high_52 = stock.get("52_week_high")
+        low_52 = stock.get("52_week_low")
 
         with col5:
             st.metric(
+                "52 Week High",
+                f"${high_52:,.2f}" if high_52 is not None else "N/A"
+            )
+
+        with col6:
+            st.metric(
                 "52 Week Low",
-                f"${stock['52_week_low']:,.2f}"
+                f"${low_52:,.2f}" if low_52 is not None else "N/A"
             )
         st.subheader("Price History")
 
