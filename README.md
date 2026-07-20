@@ -3,7 +3,9 @@
 A full-stack personal finance and portfolio analytics application built with Python and Streamlit. This application allows users to analyze individual stocks, manage personal investment portfolios, and evaluate portfolio performance using financial metrics and benchmark comparisons.
 
 ## Screenshots
-
+<img width="1917" height="1038" alt="Stock_Market_Dashboard_SS1" src="https://github.com/user-attachments/assets/e061ee4e-2462-4729-8e4a-ab67e69b06d2" />
+<img width="1904" height="1030" alt="Stock_Market_Dashboard_SS2" src="https://github.com/user-attachments/assets/d62a2737-36e9-4ae7-bffa-a2c0434e3bef" />
+<img width="1918" height="1043" alt="Stock_Market_Dashboard_SS3" src="https://github.com/user-attachments/assets/cea32d9c-36db-4d0b-98a3-ded3fd9235ff" />
 
 ## Features
 
