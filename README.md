@@ -121,7 +121,7 @@ python --version
 Open a terminal and run: 
 ```bash
 
-git clone https://github.com/Dman122533/stock-market-dashboard
+git clone https://github.com/Dman122533/stock-market-dashboard.git
 
 ```
 ### Navigate to project folder
