@@ -24,7 +24,7 @@ def render_ai_assistant():
 
         st.markdown(display_message)
 
-    user_message = st.chat_input("Ask FinFlow AI a question...")
+    user_message = st.chat_input("Ask AI a question...")
 
     if user_message:
         st.session_state.ai_messages.append(
