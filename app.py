@@ -3,7 +3,8 @@ from tabs.stock_tab import show_stock_tab
 from tabs.portfolio_tab import show_portfolio_tab
 from tabs.analytics_tab import show_analytics_tab
 from database.database import create_tables
-from database.auth import login_user, create_user
+from database.auth import login_user 
+from tabs.ai_assistant import render_ai_assistant
 
 st.set_page_config(
     page_title="Stock Market Dashboard",
@@ -119,11 +120,12 @@ with col2:
             del st.session_state.portfolio
 
         st.rerun()
-dashboard_tab, portfolio_tab, analytics_tab = st.tabs(
+dashboard_tab, portfolio_tab, analytics_tab, ai_tab = st.tabs(
     [
         "Stock Dashboard",
         "Portfolio Tracker",
-        "Analytics"
+        "Analytics",
+        "AI Financial Assistant"
     ]
 )
 with dashboard_tab:
@@ -132,3 +134,5 @@ with portfolio_tab:
     show_portfolio_tab()
 with analytics_tab:
     show_analytics_tab()
+with ai_tab:
+    render_ai_assistant()
