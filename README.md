@@ -150,6 +150,18 @@ source .venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+### Configure the OpenAI API Key
+The AI Assistant requires an OpenAI API key to access its AI features.
+1. Create an OpenAI API key from the OpenAI API platform.
+2. In the root of the project, create a file named:
+```text
+.env
+```
+3. Add your API key to the file:
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+```
+**Important:** Never commit your `.env` file or API key to GitHub. The `.env` file is excluded through `.gitignore`
 ### Start Application
 ```bash
 streamlit run app.py
